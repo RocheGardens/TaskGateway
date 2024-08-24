@@ -1,21 +1,21 @@
+using Ocelot.DependencyInjection;
+using Ocelot.Middleware;
+
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// Add Ocelot to the service collection
+builder.Services.AddOcelot();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+// Use Ocelot middleware
+app.UseRouting();
+
+app.UseEndpoints(endpoints =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    endpoints.MapControllers();
+});
 
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
+await app.UseOcelot(); // Ocelot middleware is added here
 
 app.Run();
